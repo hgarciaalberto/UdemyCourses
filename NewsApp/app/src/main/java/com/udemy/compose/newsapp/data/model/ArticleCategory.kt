@@ -1,12 +1,12 @@
-package com.udemy.compose.newsapp.model
+package com.udemy.compose.newsapp.data.model
 
-import com.udemy.compose.newsapp.model.ArticleCategory.BUSINESS
-import com.udemy.compose.newsapp.model.ArticleCategory.ENTERTAINMENT
-import com.udemy.compose.newsapp.model.ArticleCategory.GENERAL
-import com.udemy.compose.newsapp.model.ArticleCategory.HEALTH
-import com.udemy.compose.newsapp.model.ArticleCategory.SCIENCE
-import com.udemy.compose.newsapp.model.ArticleCategory.SPORTS
-import com.udemy.compose.newsapp.model.ArticleCategory.TECHNOLOGY
+import com.udemy.compose.newsapp.data.model.ArticleCategory.BUSINESS
+import com.udemy.compose.newsapp.data.model.ArticleCategory.ENTERTAINMENT
+import com.udemy.compose.newsapp.data.model.ArticleCategory.GENERAL
+import com.udemy.compose.newsapp.data.model.ArticleCategory.HEALTH
+import com.udemy.compose.newsapp.data.model.ArticleCategory.SCIENCE
+import com.udemy.compose.newsapp.data.model.ArticleCategory.SPORTS
+import com.udemy.compose.newsapp.data.model.ArticleCategory.TECHNOLOGY
 
 enum class ArticleCategory(val categoryName: String) {
     BUSINESS("business"),

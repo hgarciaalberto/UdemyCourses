@@ -1,4 +1,4 @@
-package com.udemy.compose.newsapp.model
+package com.udemy.compose.newsapp.data.model
 
 import android.content.Context
 import android.icu.text.SimpleDateFormat

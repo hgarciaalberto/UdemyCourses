@@ -1,4 +1,4 @@
-package com.udemy.compose.newsapp.model
+package com.udemy.compose.newsapp.data.model
 
 data class TopNewsArticle(
     val source: Source? = null,

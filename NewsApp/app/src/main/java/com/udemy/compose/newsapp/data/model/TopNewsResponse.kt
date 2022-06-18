@@ -1,4 +1,4 @@
-package com.udemy.compose.newsapp.model
+package com.udemy.compose.newsapp.data.model
 
 data class TopNewsResponse(
     val status: String? = null,

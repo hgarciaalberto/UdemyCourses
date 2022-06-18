@@ -34,9 +34,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.skydoves.landscapist.coil.CoilImage
 import com.udemy.compose.newsapp.R
-import com.udemy.compose.newsapp.model.MockData
-import com.udemy.compose.newsapp.model.MockData.getTimeAgo
-import com.udemy.compose.newsapp.model.TopNewsArticle
+import com.udemy.compose.newsapp.data.model.MockData
+import com.udemy.compose.newsapp.data.model.MockData.getTimeAgo
+import com.udemy.compose.newsapp.data.model.TopNewsArticle
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable

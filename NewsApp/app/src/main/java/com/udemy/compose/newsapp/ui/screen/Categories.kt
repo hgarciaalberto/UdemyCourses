@@ -15,6 +15,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -26,14 +27,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.skydoves.landscapist.coil.CoilImage
 import com.udemy.compose.newsapp.R
-import com.udemy.compose.newsapp.model.MockData
-import com.udemy.compose.newsapp.model.MockData.getTimeAgo
-import com.udemy.compose.newsapp.model.TopNewsArticle
-import com.udemy.compose.newsapp.model.getAllArticlesCategories
-import com.udemy.compose.newsapp.network.NewsManager
+import com.udemy.compose.newsapp.data.model.MockData
+import com.udemy.compose.newsapp.data.model.MockData.getTimeAgo
+import com.udemy.compose.newsapp.data.model.TopNewsArticle
+import com.udemy.compose.newsapp.data.model.getAllArticlesCategories
+import com.udemy.compose.newsapp.ui.MainViewModel
 
 @Composable
-fun Categories(onFetchCategory: (String) -> Unit = {}, newsManager: NewsManager) {
+fun Categories(onFetchCategory: (String) -> Unit = {}, viewModel: MainViewModel) {
     val tabsItems = getAllArticlesCategories()
     Column {
         LazyRow {
@@ -42,11 +43,11 @@ fun Categories(onFetchCategory: (String) -> Unit = {}, newsManager: NewsManager)
                 CategoryTab(
                     category = category.categoryName,
                     onFetchCategory = onFetchCategory,
-                    isSelected = newsManager.selectedCategory.value == category
+                    isSelected = viewModel.selectedCategory.collectAsState().value == category
                 )
             }
         }
-        ArticlesContent(articles = newsManager.getArticleByCategory.value.articles ?: listOf())
+        ArticlesContent(articles = viewModel.getArticleByCategory.collectAsState().value.articles ?: listOf())
     }
 }
 
@@ -105,12 +106,12 @@ fun ArticlesContent(articles: List<TopNewsArticle>, modifier: Modifier = Modifie
 //                            modifier = modifier.fillMaxWidth(),
 //                            horizontalArrangement = Arrangement.SpaceBetween
 //                        ) {
-                            Text(text = article.author ?: "Not Available")
-                            Text(
-                                text = MockData.stringToDate(
-                                    article.publishedAt ?: "2020-01-01T00:00:00Z"
-                                )!!.getTimeAgo(context)
-                            )
+                        Text(text = article.author ?: "Not Available")
+                        Text(
+                            text = MockData.stringToDate(
+                                article.publishedAt ?: "2020-01-01T00:00:00Z"
+                            )!!.getTimeAgo(context)
+                        )
 //                        }
                     }
                 }
