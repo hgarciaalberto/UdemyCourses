@@ -1,7 +1,6 @@
 package com.udemy.compose.newsapp.ui.screen
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,23 +21,26 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.skydoves.landscapist.coil.CoilImage
 import com.udemy.compose.newsapp.R
 import com.udemy.compose.newsapp.model.MockData
 import com.udemy.compose.newsapp.model.MockData.getTimeAgo
-import com.udemy.compose.newsapp.model.NewsData
+import com.udemy.compose.newsapp.model.TopNewsArticle
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun DetailScreen(newsData: NewsData, scrollState: ScrollState, navController: NavController) {
+fun DetailScreen(article: TopNewsArticle, scrollState: ScrollState, navController: NavController) {
     val context = LocalContext.current
 
     Scaffold(topBar = {
@@ -56,20 +58,26 @@ fun DetailScreen(newsData: NewsData, scrollState: ScrollState, navController: Na
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = "Detail Screen", fontWeight = FontWeight.SemiBold)
-            Image(painterResource(id = newsData.image), contentDescription = newsData.title)
+            CoilImage(
+                imageModel = article.urlToImage,
+                contentDescription = "",
+                contentScale = ContentScale.Fit,
+                error = ImageBitmap.imageResource(id = R.drawable.breaking_news),
+                placeHolder = ImageBitmap.imageResource(id = R.drawable.breaking_news)
+            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                InfoWithIcon(icon = Icons.Default.Edit, info = newsData.author)
+                InfoWithIcon(icon = Icons.Default.Edit, info = article.author ?: "Not Available")
                 InfoWithIcon(
                     icon = Icons.Default.DateRange,
-                    info = MockData.stringToDate(newsData.publishedAt)!!.getTimeAgo(context)
+                    info = MockData.stringToDate(article.publishedAt!!)!!.getTimeAgo(context)
                 )
             }
-            Text(text = newsData.title, fontWeight = FontWeight.Bold)
-            Text(text = newsData.description, Modifier.padding(16.dp))
+            Text(text = article.title ?: "Not Available", fontWeight = FontWeight.Bold)
+            Text(text = article.description ?: "Not Available", Modifier.padding(16.dp))
         }
     }
 }
@@ -105,8 +113,7 @@ fun InfoWithIcon(icon: ImageVector, info: String) {
 @Composable
 fun DetailScreenPreview() {
     DetailScreen(
-        newsData = NewsData(
-            id = 2,
+        TopNewsArticle(
             author = "Nanita Singh",
             title = "Cleo Smith: 'I'm not a fan of the new iPhone'",
             description = "The new iPhone is a great device, but it's a bit of a pain to get it. Cleo Smith is a...",

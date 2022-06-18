@@ -21,7 +21,7 @@ fun BottomMenu(navController: NavController) {
         BottomMenuScreen.Sources
     )
 
-    BottomNavigation(contentColor = colorResource(R.color.white)) {
+    BottomNavigation(contentColor = colorResource(id = R.color.white)) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
@@ -33,14 +33,14 @@ fun BottomMenu(navController: NavController) {
                 unselectedContentColor = Color.Gray,
                 selected = currentRoute == it.route,
                 onClick = {
-                    navController.navigate(it.route){
-                        navController.graph.startDestinationRoute?.let{                            route ->
-                            popUpTo(route){
+                    navController.navigate(it.route) {
+                        navController.graph.startDestinationRoute?.let { route ->
+                            popUpTo(route) {
                                 saveState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
                         }
+                        launchSingleTop = true
+                        restoreState = true
                     }
                 },
                 icon = { Icon(imageVector = it.icon, contentDescription = it.title) }
