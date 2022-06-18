@@ -15,6 +15,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.skydoves.landscapist.coil.CoilImage
 import com.udemy.compose.newsapp.R
+import com.udemy.compose.newsapp.coponents.ErrorUI
+import com.udemy.compose.newsapp.coponents.LoadingUI
 import com.udemy.compose.newsapp.data.model.MockData
 import com.udemy.compose.newsapp.data.model.MockData.getTimeAgo
 import com.udemy.compose.newsapp.data.model.TopNewsArticle
@@ -34,23 +37,36 @@ import com.udemy.compose.newsapp.data.model.getAllArticlesCategories
 import com.udemy.compose.newsapp.ui.MainViewModel
 
 @Composable
-fun Categories(onFetchCategory: (String) -> Unit = {}, viewModel: MainViewModel) {
+fun Categories(
+    onFetchCategory: (String) -> Unit = {},
+    viewModel: MainViewModel,
+    isLoading: MutableState<Boolean>,
+    isError: MutableState<Boolean>
+) {
     val tabsItems = getAllArticlesCategories()
+
     Column {
-        LazyRow {
-            items(tabsItems.size) {
-                val category = tabsItems[it]
-                CategoryTab(
-                    category = category.categoryName,
-                    onFetchCategory = onFetchCategory,
-                    isSelected = viewModel.selectedCategory.collectAsState().value == category
-                )
+        when {
+            isLoading.value -> LoadingUI()
+
+            isError.value -> ErrorUI()
+
+            else -> {
+                LazyRow {
+                    items(tabsItems.size) {
+                        val category = tabsItems[it]
+                        CategoryTab(
+                            category = category.categoryName,
+                            onFetchCategory = onFetchCategory,
+                            isSelected = viewModel.selectedCategory.collectAsState().value == category
+                        )
+                    }
+                }
+                ArticlesContent(articles = viewModel.getArticleByCategory.collectAsState().value.articles ?: listOf())
             }
         }
-        ArticlesContent(articles = viewModel.getArticleByCategory.collectAsState().value.articles ?: listOf())
     }
 }
-
 
 @Composable
 fun CategoryTab(category: String, isSelected: Boolean = false, onFetchCategory: (String) -> Unit) {
@@ -102,17 +118,12 @@ fun ArticlesContent(articles: List<TopNewsArticle>, modifier: Modifier = Modifie
                             fontWeight = FontWeight.Bold,
                             overflow = TextOverflow.Ellipsis
                         )
-//                        Row(
-//                            modifier = modifier.fillMaxWidth(),
-//                            horizontalArrangement = Arrangement.SpaceBetween
-//                        ) {
                         Text(text = article.author ?: "Not Available")
                         Text(
                             text = MockData.stringToDate(
                                 article.publishedAt ?: "2020-01-01T00:00:00Z"
                             )!!.getTimeAgo(context)
                         )
-//                        }
                     }
                 }
             }

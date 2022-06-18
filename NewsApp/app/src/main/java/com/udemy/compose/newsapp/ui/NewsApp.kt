@@ -9,6 +9,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -56,6 +57,8 @@ fun Navigation(
     paddingValues: PaddingValues,
     viewModel: MainViewModel
 ) {
+    val loading by viewModel.isLoading.collectAsState()
+    val error by viewModel.isError.collectAsState()
 
     val articles = mutableListOf(TopNewsArticle())
     val topArticles = viewModel.newsResponse.collectAsState().value.articles
@@ -69,8 +72,10 @@ fun Navigation(
         modifier = Modifier.padding(paddingValues = paddingValues)
     ) {
         val queryState = mutableStateOf(viewModel.query.value)
+        val isLoading = mutableStateOf(loading)
+        val isError = mutableStateOf(error)
 
-        bottomNavigation(navController, articles, queryState, viewModel)
+        bottomNavigation(navController, articles, queryState, viewModel, isLoading, isError)
 
         composable(
             route = "Detail/{index}",
@@ -98,14 +103,18 @@ fun NavGraphBuilder.bottomNavigation(
     navController: NavController,
     articles: List<TopNewsArticle>,
     query: MutableState<String>,
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    isLoading: MutableState<Boolean>,
+    isError: MutableState<Boolean>
 ) {
     composable(BottomMenuScreen.TopNews.route) {
         TopNews(
             navController = navController,
             articles = articles,
             query = query,
-            viewModel = viewModel
+            viewModel = viewModel,
+            isLoading = isLoading,
+            isError = isError
         )
     }
     composable(BottomMenuScreen.Categories.route) {
@@ -116,10 +125,16 @@ fun NavGraphBuilder.bottomNavigation(
             viewModel = viewModel,
             onFetchCategory = {
                 viewModel.onSelectedCategoryChanged(it)
-            }
+            },
+            isLoading = isLoading,
+            isError = isError
         )
     }
     composable(BottomMenuScreen.Sources.route) {
-        Sources(viewModel)
+        Sources(
+            viewModel = viewModel,
+            isLoading = isLoading,
+            isError = isError
+        )
     }
 }

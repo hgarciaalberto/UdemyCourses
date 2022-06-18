@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.skydoves.landscapist.coil.CoilImage
 import com.udemy.compose.newsapp.R
+import com.udemy.compose.newsapp.coponents.ErrorUI
+import com.udemy.compose.newsapp.coponents.LoadingUI
 import com.udemy.compose.newsapp.coponents.SearchBar
 import com.udemy.compose.newsapp.data.model.MockData
 import com.udemy.compose.newsapp.data.model.MockData.getTimeAgo
@@ -38,7 +40,9 @@ fun TopNews(
     navController: NavController,
     articles: List<TopNewsArticle>,
     query: MutableState<String>,
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    isLoading: MutableState<Boolean>,
+    isError: MutableState<Boolean>
 ) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         SearchBar(query, viewModel)
@@ -50,12 +54,22 @@ fun TopNews(
             resultList.addAll(articles)
         }
 
-        LazyColumn {
-            items(articles.size) { index ->
-                TopNewsItem(
-                    article = resultList[index],
-                    onNewsClicked = { navController.navigate("Detail/$index") }
-                )
+        when {
+            isLoading.value -> {
+                LoadingUI()
+            }
+            isError.value -> {
+                ErrorUI()
+            }
+            else -> {
+                LazyColumn {
+                    items(articles.size) { index ->
+                        TopNewsItem(
+                            article = resultList[index],
+                            onNewsClicked = { navController.navigate("Detail/$index") }
+                        )
+                    }
+                }
             }
         }
     }

@@ -21,6 +21,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,12 +40,14 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.udemy.compose.newsapp.R
+import com.udemy.compose.newsapp.coponents.ErrorUI
+import com.udemy.compose.newsapp.coponents.LoadingUI
 import com.udemy.compose.newsapp.data.model.TopNewsArticle
 import com.udemy.compose.newsapp.ui.MainViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun Sources(viewModel: MainViewModel) {
+fun Sources(viewModel: MainViewModel, isLoading: MutableState<Boolean>, isError: MutableState<Boolean>) {
 
     val items = listOf(
         "TechCrunch" to "techcrunch",
@@ -88,9 +91,19 @@ fun Sources(viewModel: MainViewModel) {
             }
         )
     }) {
-        viewModel.getArticlesBySource()
-        val article = viewModel.getArticleBySource.collectAsState().value
-        SourceContent(articles = article.articles ?: listOf())
+        when {
+            isLoading.value -> {
+                LoadingUI()
+            }
+            isError.value -> {
+                ErrorUI()
+            }
+            else -> {
+                viewModel.getArticlesBySource()
+                val article = viewModel.getArticleBySource.collectAsState().value
+                SourceContent(articles = article.articles ?: listOf())
+            }
+        }
     }
 }
 
